@@ -63,7 +63,7 @@
 #include "operator/deconv_param.hpp"
 #include "operator/resize_param.hpp"
 #include "operator/split_param.hpp"
-
+#include "operator/channel_shuffle_param.hpp"
 
 namespace TEngine {
 
@@ -159,7 +159,7 @@ bool CaffeSingle::LoadBinaryFile(const char* fname, te_caffe::NetParameter& caff
     is.close();
 
     if(!ret)
-        LOG_ERROR() << "parse file: " << fname << " failed\n";
+        LOG_ERROR() << "parse binary file: " << fname << " failed\n";
 
     if(NetNeedsUpgrade(fname, caffe_net))
     {
@@ -187,7 +187,7 @@ bool CaffeSingle::LoadTextFile(const char* fname, te_caffe::NetParameter& caffe_
     is.close();
 
     if(!ret)
-        LOG_ERROR() << "parse file: " << fname << " failed\n";
+        LOG_ERROR() << "parse text file: " << fname << " failed\n";
 
     if(NetNeedsUpgrade(fname, caffe_net))
     {
@@ -549,6 +549,7 @@ static bool LoadScaleBlob(StaticGraph* graph, StaticNode* node, const te_caffe::
 
     return true;
 }
+
 static bool LoadPReLuBlob(StaticGraph* graph, StaticNode* node, const te_caffe::LayerParameter& layer_param)
 {
     std::vector<std::string> name_list = {"slope"};
@@ -1311,6 +1312,24 @@ static bool LoadCaffeScale(StaticGraph* graph, StaticNode* node, const te_caffe:
     return true;
 }
 
+static bool LoadCaffeShuffleChannel(StaticGraph* graph, StaticNode* node, const te_caffe::LayerParameter& layer_param)
+{
+    ShuffleChannelParam param = any_cast<ShuffleChannelParam>(OpManager::GetOpDefParam("ShuffleChannel"));
+
+    const te_caffe::ShuffleChannelParameter& shuffle_channel_param = layer_param.shuffle_channel_param();
+
+    if(shuffle_channel_param.has_group())
+        param.group = shuffle_channel_param.group();
+
+    StaticOp* op = CreateStaticOp(graph, "ShuffleChannel");
+
+    SetOperatorParam(op, param);
+
+    SetNodeOp(node, op);
+
+    return true;
+}
+
 static bool LoadCaffePReLu(StaticGraph* graph, StaticNode* node, const te_caffe::LayerParameter& layer_param)
 {
     StaticOp* op = CreateStaticOp(graph, "PReLU");
@@ -1385,6 +1404,7 @@ bool CaffeSerializerRegisterOpLoader(void)
     p_caffe->RegisterOpLoadMethod("Reorg", op_load_t(LoadCaffeReorg));
     p_caffe->RegisterOpLoadMethod("Region", op_load_t(LoadCaffeRegion));
     p_caffe->RegisterOpLoadMethod("Resize", op_load_t(LoadCaffeResize));
+    p_caffe->RegisterOpLoadMethod("ShuffleChannel",op_load_t(LoadCaffeShuffleChannel));
 
     if(!SerializerManager::SafeGet("caffe", serializer))
         return false;
@@ -1421,6 +1441,7 @@ bool CaffeSerializerRegisterOpLoader(void)
     p_buddy->RegisterOpLoadMethod("Reorg", op_load_t(LoadCaffeReorg));
     p_buddy->RegisterOpLoadMethod("Region", op_load_t(LoadCaffeRegion));
     p_buddy->RegisterOpLoadMethod("Resize", op_load_t(LoadCaffeResize));
+    p_buddy->RegisterOpLoadMethod("ShuffleChannel",op_load_t(LoadCaffeShuffleChannel));
 
     blob_load_map["Convolution"] = LoadConvolutionBlob;
     blob_load_map["Deconvolution"] = LoadDeconvolutionBlob;

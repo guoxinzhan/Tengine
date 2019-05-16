@@ -129,7 +129,7 @@ void PrintTopLabels(const char* label_file, float* data)
     {
         int idx = top_N[i];
 
-        std::cout << std::fixed << std::setprecision(4) << result[idx] << " - \"" << labels[idx] << "\"\n";
+        std::cout << std::fixed << std::setprecision(4) << result[idx] << " - \"" << idx<< "\"\n";
     }
 }
 

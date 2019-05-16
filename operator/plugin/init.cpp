@@ -71,7 +71,7 @@
 #include "operator/swap_axis.hpp"
 #include "operator/gru.hpp"
 #include "operator/add_n.hpp"
-
+#include "operator/channel_shuffle.hpp"
 using namespace TEngine;
 
 int operator_plugin_init(void)
@@ -122,6 +122,7 @@ int operator_plugin_init(void)
     RegisterOp<SwapAxis>("SwapAxis");
     RegisterOp<GRU>("GRU");
     RegisterOp<Addn>("Addn");
+    RegisterOp<ShuffleChannel>("ShuffleChannel");
 
     // std::cout<<"OPERATOR PLUGIN INITED\n";
     return 0;
