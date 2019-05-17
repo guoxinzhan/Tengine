@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.6)
 
 set(CMAKE_BUILD_TYPE debug)
 # set(CMAKE_BUILD_TYPE relwithdebinfo)
-# set(CMAKE_BUILD_TYPE release)
+#set(CMAKE_BUILD_TYPE release)
 
 
 #get the NDK_ROOT from android.toolchains.cmake
@@ -53,7 +53,7 @@ option(CONFIG_ARCH_ARM64 "build arm64 version" OFF)
 option(CONFIG_ARCH_ARM32 "build arm32 version" OFF)
 option(CONFIG_ARCH_BLAS  "build blas  version" OFF)
 option(CONFIG_ARCH_ARM8_2 "build float16 for arm8.2" OFF)
-option(CONFIG_ACL_GPU  "build acl gpu  version" ON)
+option(CONFIG_ACL_GPU  "build acl gpu  version" OFF)
 option(CONFIG_CAFFE_SERIALIZER "caffe serializer" ON)
 option(CONFIG_ONNX_SERIALIZER "onnx serializer" OFF)
 option(CONFIG_MXNET_SERIALIZER "mxnet serializer" OFF)

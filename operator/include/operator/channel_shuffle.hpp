@@ -19,7 +19,7 @@
 
 /*
  * Copyright (c) 2017, Open AI Lab
- * Author: haitao@openailab.com
+ * Author: guo.xinzhan@seiriosai.com
  */
 #ifndef __CHANNEL_SHUFFLE_HPP__
 #define __CHANNEL_SHUFFLE_HPP__

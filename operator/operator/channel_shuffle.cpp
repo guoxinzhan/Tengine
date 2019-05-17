@@ -19,7 +19,7 @@
 
 /*
  * Copyright (c) 2017, Open AI Lab
- * Author: haitao@openailab.com
+ * Author: guo.xinzhan@seiriosai.com
  */
 
 #include "operator/channel_shuffle.hpp"

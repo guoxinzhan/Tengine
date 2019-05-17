@@ -19,7 +19,7 @@
 
 /*
  * Copyright (c) 2018, Open AI Lab
- * Author: chunyinglv@openailab.com
+ * Author: guo.xinzhan@seiriosai.com
  */
 #include <iostream>
 #include <functional>
@@ -51,8 +51,6 @@ struct ShuffleChannelOps : public NodeOps
         int group = param->group;
         float* input = ( float* )get_tensor_mem(input_tensor);
         float* output = ( float* )get_tensor_mem(output_tensor);
-        // std::cout<<output[1]<<" p "<<input[1]<<"\n";
-        // std::cout<<output[0]<<" p "<<input[0]<<"\n";
 
         if(dims.size()==4){
             int batch_number = dims[0];
@@ -75,20 +73,13 @@ struct ShuffleChannelOps : public NodeOps
                         int src_q = (chs_per_group * i + j) * hw_size;
                         int dst_q = (group * j + i) * hw_size;
                         memcpy(output + b * hw_size * channel + dst_q, input + b * hw_size * channel + src_q, hw_size*sizeof(float));
-                        //memset(output + b * hw_size * channel + dst_q, 0, hw_size*sizeof(float));
                     }
                 }
             }
-            // std::cerr<<"========dims4========\n";
-            // std::cout<<input<<"\n";
-            // std::cout<<output<<"\n";
-            // std::cout<<output[0]<<" l "<<input[0]<<"\n";
-            // std::cout<<output[group*hw_size]<<" l "<<input[hw_size]<<"\n";
-            // std::cerr<<"========dims4========\n";
         }
         else if(dims.size()==3){
             int channel = dims[0];
-            int hw_size = dims[1]*dims[2]*sizeof(float);
+            int hw_size = dims[1]*dims[2];
             int chs_per_group = channel / group; 
            
             if (channel != chs_per_group * group)
@@ -103,7 +94,7 @@ struct ShuffleChannelOps : public NodeOps
                 {
                     int src_q = (chs_per_group * i + j)*hw_size;
                     int dst_q = (group * j + i)*hw_size;
-                    memcpy(output+dst_q, input+src_q, hw_size);
+                    memcpy(output+dst_q, input+src_q, hw_size*sizeof(float));
                 }
             }
 
